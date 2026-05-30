@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OshiWatch — 推しが、手首に。</title>
+<style>
+  :root {
+    --lavender: #E8E0F5;
+    --pink:     #F5C6D6;
+    --mid:      #F5D2E4;
+    --text:     #5A4A6A;
+    --accent:   #D17B9E;
+    --accent-l: rgba(209,123,158,0.18);
+    --white:    #fff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: linear-gradient(180deg, var(--lavender) 0%, var(--mid) 50%, var(--pink) 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Sparkles ── */
+  .sparkles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sparkle {
+    position: absolute;
+    font-size: 10px;
+    color: rgba(90,74,106,0.22);
+    user-select: none;
+  }
+
+  /* ── Layout ── */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    padding: 5px 18px;
+    background: rgba(232,224,245,0.75);
+    border: 1px solid rgba(209,123,158,0.45);
+    border-radius: 999px;
+    margin-bottom: 28px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Headline ── */
+  .headline {
+    font-size: clamp(40px, 8vw, 58px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .headline .l1 { color: var(--text); display: block; }
+  .headline .l2 { color: var(--accent); display: block; }
+
+  /* ── Sub ── */
+  .sub {
+    font-size: clamp(15px, 2.5vw, 18px);
+    font-weight: 300;
+    color: rgba(90,74,106,0.75);
+    margin-bottom: 32px;
+  }
+
+  /* ── Divider ── */
+  .diamond-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px auto;
+    max-width: 280px;
+    color: rgba(209,123,158,0.7);
+    font-size: 18px;
+  }
+  .diamond-divider::before,
+  .diamond-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(209,123,158,0.35);
+  }
+
+  /* ── Hero device row ── */
+  .hero-devices {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 28px;
+    margin: 0 auto 36px;
+    flex-wrap: wrap;
+  }
+
+  /* ── iPhone Mockup ── */
+  .iphone {
+    position: relative;
+    width: 160px;
+    height: 345px;
+    border-radius: 36px;
+    background: #1a1a2e;
+    border: 3px solid rgba(90,74,106,0.5);
+    box-shadow: 0 24px 60px rgba(90,74,106,0.32), inset 0 0 0 1px rgba(255,255,255,0.08);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  /* Dynamic Island */
+  .iphone::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 12px;
+    background: #1a1a2e;
+    border-radius: 8px;
+    z-index: 10;
+    box-shadow: 0 0 0 2px #2a2a3e;
+  }
+  .iphone-screen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #EAE2F6 0%, #F5D4E6 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 12px 16px;
+    gap: 0;
+    overflow: hidden;
+  }
+  .iphone-badge {
+    font-size: 8px;
+    font-weight: 500;
+    color: #5A4A6A;
+    padding: 3px 10px;
+    background: rgba(232,224,245,0.8);
+    border: 0.5px solid rgba(209,123,158,0.5);
+    border-radius: 99px;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .iphone-headline {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .iphone-headline .l1 { color: #5A4A6A; display: block; }
+  .iphone-headline .l2 { color: #D17B9E; display: block; }
+  .iphone-sub {
+    font-size: 7.5px;
+    font-weight: 300;
+    color: rgba(90,74,106,0.7);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .iphone-divider {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: rgba(209,123,158,0.7);
+    font-size: 8px;
+    margin-bottom: 8px;
+  }
+  .iphone-divider::before, .iphone-divider::after {
+    content: "";
+    flex: 1;
+    height: 0.5px;
+    background: rgba(209,123,158,0.35);
+  }
+  /* Mini Watch inside iPhone */
+  .mini-watch {
+    position: relative;
+    width: 78px;
+    height: 92px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1.5px solid rgba(209,123,158,0.65);
+    box-shadow: 0 8px 24px rgba(209,123,158,0.28);
+    flex-shrink: 0;
+  }
+  .mini-watch img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  .mini-watch-dot {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: rgba(255,255,255,0.8);
+  }
+  .iphone-caption {
+    font-size: 7px;
+    font-weight: 300;
+    color: rgba(90,74,106,0.65);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* ── Watch Assembly (band + case + crown + screen) ── */
+  .watch-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 40px;
+  }
+  .watch-assembly {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Band */
+  .wa-band {
+    background: linear-gradient(90deg, #CABDE0 0%, #E2D2EC 50%, #CABDE0 100%);
+    position: relative;
+    z-index: 0;
+    flex-shrink: 0;
+  }
+  .wa-band.top { border-radius: 7px 7px 2px 2px; margin-bottom: -2px; }
+  .wa-band.bot { border-radius: 2px 2px 7px 7px; margin-top:    -2px; }
+
+  /* Case */
+  .wa-case {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(155deg,
+      #D8D8DA 0%, #A0A0A4 30%, #6E6E72 52%, #A0A0A4 74%, #D4D4D6 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,0.2),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      3px 0 10px rgba(0,0,0,0.18),
+      0 20px 44px rgba(90,74,106,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Digital Crown (ridged) */
+  .wa-case::before {
+    content: "";
+    position: absolute;
+    background: repeating-linear-gradient(
+      180deg,
+      #C6C6C8 0px, #C6C6C8 1.5px,
+      #8A8A8E 1.5px, #8A8A8E 3px
+    );
+    box-shadow: 2px 0 4px rgba(0,0,0,0.3), inset -1px 0 2px rgba(255,255,255,0.1);
+  }
+
+  /* Side Button */
+  .wa-case::after {
+    content: "";
+    position: absolute;
+    background: linear-gradient(180deg, #C6C6C8, #8A8A8E, #C6C6C8);
+    box-shadow: 2px 0 4px rgba(0,0,0,0.28);
+  }
+
+  /* Screen */
+  .wa-screen {
+    overflow: hidden;
+    position: relative;
+    background: #000;
+    flex-shrink: 0;
+  }
+  .wa-screen img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    display: block;
+  }
+
+  .wa-dot {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.88);
+    text-shadow: 0 1px 5px rgba(0,0,0,0.45);
+  }
+
+  /* ─ Large ─ */
+  .wa-band.wa-lg   { width: 114px; height: 20px; }
+  .wa-case.wa-lg   { width: 178px; height: 210px; border-radius: 44px; }
+  .wa-case.wa-lg::before { right: -11px; top: 48px;  width: 11px; height: 42px; border-radius: 5px; }
+  .wa-case.wa-lg::after  { right: -9px;  top: 105px; width: 9px;  height: 20px; border-radius: 4px; }
+  .wa-screen.wa-lg { width: 150px; height: 177px; border-radius: 37px; }
+  .wa-dot.wa-lg    { bottom: 13px; font-size: 14px; }
+
+  /* ─ Medium ─ */
+  .wa-band.wa-md   { width: 92px; height: 16px; }
+  .wa-case.wa-md   { width: 142px; height: 168px; border-radius: 35px; }
+  .wa-case.wa-md::before { right: -9px; top: 38px; width: 9px; height: 34px; border-radius: 4px; }
+  .wa-case.wa-md::after  { right: -7px; top: 83px; width: 7px; height: 16px; border-radius: 3px; }
+  .wa-screen.wa-md { width: 118px; height: 140px; border-radius: 29px; }
+  .wa-dot.wa-md    { bottom: 10px; font-size: 11px; }
+
+  /* ─ Small ─ */
+  .wa-band.wa-sm   { width: 74px; height: 13px; }
+  .wa-case.wa-sm   { width: 116px; height: 137px; border-radius: 28px; }
+  .wa-case.wa-sm::before { right: -8px; top: 31px; width: 8px; height: 27px; border-radius: 4px; }
+  .wa-case.wa-sm::after  { right: -6px; top: 67px; width: 6px; height: 13px; border-radius: 3px; }
+  .wa-screen.wa-sm { width: 96px; height: 114px; border-radius: 23px; }
+  .wa-dot.wa-sm    { bottom: 8px; font-size: 9px; }
+
+  /* Camo screen content */
+  .wa-camo {
+    position: absolute; inset: 0;
+    background: #141020;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 100; letter-spacing: 0.04em;
+  }
+  .wa-camo .res { color: rgba(255,255,255,0.6); }
+  .wa-camo .dt  { color: rgba(255,255,255,0.45); }
+  .wa-screen.wa-lg .wa-camo .res { font-size: 13px; }
+  .wa-screen.wa-lg .wa-camo .dt  { font-size: 12px; }
+  .wa-screen.wa-md .wa-camo .res { font-size: 11px; }
+  .wa-screen.wa-md .wa-camo .dt  { font-size: 10px; }
+  .wa-screen.wa-sm .wa-camo .res { font-size: 9px; }
+  .wa-screen.wa-sm .wa-camo .dt  { font-size: 8px; }
+
+  /* ── App Store Button ── */
+  .appstore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text);
+    color: #fff;
+    border-radius: 14px;
+    padding: 14px 28px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 24px rgba(90,74,106,0.3);
+    transition: transform .15s, box-shadow .15s;
+    margin-top: 8px;
+  }
+  .appstore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(90,74,106,0.38);
+  }
+  .appstore-btn svg { flex-shrink: 0; }
+  .appstore-btn-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+  .appstore-btn-label span:first-child { font-size: 11px; font-weight: 400; opacity: .8; }
+
+  /* ── Feature Sections ── */
+  .feature {
+    padding: 64px 24px;
+  }
+  .feature-title {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .feature-title .accent { color: var(--accent); }
+  .feature-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(90,74,106,0.75);
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Camo Compare ── */
+  .watch-pair {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .watch-pair-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .watch-pair-item span { font-size: 13px; font-weight: 300; color: rgba(90,74,106,0.7); }
+  .arrow-badge {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--accent); font-size: 11px; font-weight: 500;
+    padding-bottom: 24px;
+  }
+  .arrow-badge svg { width: 20px; }
+
+  /* ── Format Chips ── */
+  .chips-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .chip {
+    background: rgba(232,224,245,0.55);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+
+  /* ── Color Swatches ── */
+  .swatches {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(209,123,158,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* ── Coming Soon ── */
+  .coming-soon-icon {
+    font-size: 64px;
+    margin-bottom: 12px;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(209,123,158,0.4));
+  }
+
+  /* ── Section Separator ── */
+  .sep {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 0 auto 48px;
+    border-radius: 1px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 48px 24px 60px;
+    font-size: 13px;
+    color: rgba(90,74,106,0.6);
+    border-top: 1px solid rgba(209,123,158,0.2);
+  }
+  footer a {
+    color: rgba(90,74,106,0.7);
+    text-decoration: none;
+    margin: 0 12px;
+  }
+  footer a:hover { color: var(--accent); }
+  .footer-brand {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sparkle decoration -->
+<div class="sparkles" aria-hidden="true">
+  <span class="sparkle" style="left:8%;top:7%">✦</span>
+  <span class="sparkle" style="left:89%;top:11%">✦</span>
+  <span class="sparkle" style="left:4%;top:28%">✦</span>
+  <span class="sparkle" style="left:93%;top:25%">✦</span>
+  <span class="sparkle" style="left:13%;top:50%">✦</span>
+  <span class="sparkle" style="left:87%;top:47%">✦</span>
+  <span class="sparkle" style="left:6%;top:72%">✦</span>
+  <span class="sparkle" style="left:91%;top:68%">✦</span>
+  <span class="sparkle" style="left:18%;top:88%">✦</span>
+  <span class="sparkle" style="left:80%;top:85%">✦</span>
+  <span class="sparkle" style="left:50%;top:4%">✦</span>
+</div>
+
+<!-- ── Hero ── -->
+<section>
+  <div class="badge">OshiWatch — 推し活ウォッチ</div>
+
+  <h1 class="headline">
+    <span class="l1">推しが、</span>
+    <span class="l2">手首に。</span>
+  </h1>
+
+  <p class="sub">いつでも会える、わたしだけの時間</p>
+
+  <div class="diamond-divider">♦</div>
+
+  <div class="hero-devices">
+    <!-- iPhone: tutorial page 1 -->
+    <div class="iphone">
+      <div class="iphone-screen">
+        <div class="iphone-badge">OshiWatch — 推し活ウォッチ</div>
+        <div class="iphone-headline">
+          <span class="l1">推しが、</span>
+          <span class="l2">手首に。</span>
+        </div>
+        <div class="iphone-sub">いつでも会える、わたしだけの時間</div>
+        <div class="iphone-divider">♦</div>
+        <div class="mini-watch">
+          <img src="oshi_sample.png" alt="推し画像">
+          <div class="mini-watch-dot">♦</div>
+        </div>
+        <div class="iphone-caption">Apple Watch × 推し活</div>
+      </div>
+    </div>
+
+    <!-- Apple Watch (large) -->
+    <div class="watch-assembly">
+      <div class="wa-band wa-lg top"></div>
+      <div class="wa-case wa-lg">
+        <div class="wa-screen wa-lg">
+          <img src="oshi_sample.png" alt="推し画像">
+          <div class="wa-dot wa-lg">♦</div>
+        </div>
+      </div>
+      <div class="wa-band wa-lg bot"></div>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-bottom:28px;">Apple Watch × 推し活</p>
+
+  <a class="appstore-btn" href="#">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+    </svg>
+    <div class="appstore-btn-label">
+      <span>App Storeで</span>
+      <span>ダウンロード</span>
+    </div>
+  </a>
+</section>
+
+<div class="sep"></div>
+
+<!-- ── Feature 2: カモフラモード ── -->
+<section class="feature">
+  <div class="badge">カモフラモード</div>
+
+  <h2 class="feature-title">
+    <span class="accent">♦ひとつで、</span><br>一瞬カモフラ。
+  </h2>
+  <p class="feature-desc">人目が気になる場面でも、大丈夫。</p>
+
+  <div class="watch-pair">
+    <div class="watch-pair-item">
+      <div class="watch-assembly">
+        <div class="wa-band wa-sm top"></div>
+        <div class="wa-case wa-sm">
+          <div class="wa-screen wa-sm">
+            <img src="oshi_sample.png" alt="推し文字盤">
+            <div class="wa-dot wa-sm">♦</div>
+          </div>
+        </div>
+        <div class="wa-band wa-sm bot"></div>
+      </div>
+      <span>推し文字盤</span>
+    </div>
+
+    <div class="arrow-badge">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      ♦タップ
+    </div>
+
+    <div class="watch-pair-item">
+      <div class="watch-assembly">
+        <div class="wa-band wa-sm top"></div>
+        <div class="wa-case wa-sm">
+          <div class="wa-screen wa-sm">
+            <div class="wa-camo">
+              <span class="res">Reserved</span>
+              <span class="dt">令和8年</span>
+              <span class="dt">05/30 土</span>
+            </div>
+            <div class="wa-dot wa-sm">♦</div>
+          </div>
+        </div>
+        <div class="wa-band wa-sm bot"></div>
+      </div>
+      <span>カモフラモード</span>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-top:32px;">いつでも推しのそばに、でも安心して。</p>
+</section>
+
+<div class="sep"></div>
+
+<!-- ── Feature 3: 推しウォッチ ── -->
+<section class="feature">
+  <div class="badge">推しウォッチ</div>
+
+  <h2 class="feature-title">
+    文字盤に、<br><span class="accent">推しの♦を。</span>
+  </h2>
+  <p class="feature-desc">4つの表示形式から選べます。</p>
+
+  <div class="watch-wrap" style="margin-bottom:28px;">
+    <div class="watch-assembly">
+      <div class="wa-band wa-md top"></div>
+      <div class="wa-case wa-md">
+        <div class="wa-screen wa-md">
+          <img src="oshi_sample.png" alt="推し画像">
+          <div class="wa-dot wa-md">♦</div>
+        </div>
+      </div>
+      <div class="wa-band wa-md bot"></div>
+    </div>
+  </div>
+
+  <div class="chips-grid">
+    <div class="chip">2026♦R8</div>
+    <div class="chip">2026♦令和8</div>
+    <div class="chip">木♦05/30</div>
+    <div class="chip">T♦05/30</div>
+  </div>
+
+  <p class="sub" style="margin-top:28px;">推しスタイルに合わせて、お好みで。</p>
+</section>
+
+<div class="sep"></div>
+
+<!-- ── Feature 4: カスタマイズ ── -->
+<section class="feature">
+  <div class="badge">推しルーム</div>
+
+  <h2 class="feature-title">
+    カモフラカラーは、<br><span class="accent">自分好みに。</span>
+  </h2>
+  <p class="feature-desc">iPhoneで選ぶと、Watchにすぐ反映。</p>
+
+  <div class="swatches">
+    <div class="swatch" style="background:#141020;"></div>
+    <div class="swatch" style="background:#1A0F38;"></div>
+    <div class="swatch" style="background:#2E0F1A;"></div>
+    <div class="swatch" style="background:#0A231A;"></div>
+  </div>
+
+  <div class="watch-wrap">
+    <div class="watch-assembly">
+      <div class="wa-band wa-md top"></div>
+      <div class="wa-case wa-md">
+        <div class="wa-screen wa-md">
+          <div class="wa-camo">
+            <span class="res">Reserved</span>
+            <span class="dt">令和8年</span>
+            <span class="dt">05/30 土</span>
+          </div>
+          <div class="wa-dot wa-md">♦</div>
+        </div>
+      </div>
+      <div class="wa-band wa-md bot"></div>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-top:24px;">推しの世界観に合わせて、とことん自分らしく。</p>
+</section>
+
+<div class="sep"></div>
+
+<!-- ── Feature 5: 推しアラーム予告 ── -->
+<section class="feature">
+  <div class="badge">Coming Soon</div>
+
+  <span class="coming-soon-icon">🌙</span>
+
+  <h2 class="feature-title">
+    推しアラームも、<br><span class="accent">もうすぐ。</span>
+  </h2>
+  <p class="feature-desc">
+    推しがバイブで優しく起こしてくれる。<br>
+    眠りの浅い時間帯にそっと。<br>
+    推しと一緒に過ごす一日のために。
+  </p>
+
+  <p class="sub">OshiWatchアプリ内で「気になる ❤️」を押してお知らせを受け取れます。</p>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p class="footer-brand">♦ OshiWatch</p>
+  <p>
+    <a href="support.html">サポート / Support</a>
+    <a href="privacy.html">プライバシーポリシー / Privacy Policy</a>
+  </p>
+  <p style="margin-top:16px;">© 2026 hanaasa · <a href="mailto:oshiwatch.support@gmail.com">oshiwatch.support@gmail.com</a></p>
+</footer>
+
+</body>
+</html>
