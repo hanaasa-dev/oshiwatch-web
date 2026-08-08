@@ -328,24 +328,44 @@
   .wa-screen.wa-sm { width: 96px; height: 114px; border-radius: 23px; }
   .wa-dot.wa-sm    { bottom: 8px; font-size: 9px; }
 
-  /* Camo screen content */
+  /* Camo screen content (実際の文字盤に準拠: 右上に小さい時刻・中央に大きい時刻・日付・年号) */
   .wa-camo {
     position: absolute; inset: 0;
-    background: #141020;
+    background: #7B3FE4;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 4px;
-    color: rgba(255,255,255,0.55);
-    font-weight: 100; letter-spacing: 0.04em;
+    color: #ffffff;
+    font-weight: 400;
+    transition: background 0.25s ease;
   }
-  .wa-camo .res { color: rgba(255,255,255,0.6); }
-  .wa-camo .dt  { color: rgba(255,255,255,0.45); }
-  .wa-screen.wa-lg .wa-camo .res { font-size: 13px; }
-  .wa-screen.wa-lg .wa-camo .dt  { font-size: 12px; }
-  .wa-screen.wa-md .wa-camo .res { font-size: 11px; }
-  .wa-screen.wa-md .wa-camo .dt  { font-size: 10px; }
-  .wa-screen.wa-sm .wa-camo .res { font-size: 9px; }
-  .wa-screen.wa-sm .wa-camo .dt  { font-size: 8px; }
+  .wa-camo .camo-time-small {
+    position: absolute;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  .wa-camo .camo-time-big {
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+  }
+  .wa-camo .camo-date {
+    color: #ffffff;
+  }
+  .wa-camo .camo-year {
+    color: #ffffff;
+  }
+  .wa-screen.wa-lg .wa-camo .camo-time-small { font-size: 9px; top: 10px; right: 12px; }
+  .wa-screen.wa-lg .wa-camo .camo-time-big   { font-size: 30px; margin-bottom: 6px; }
+  .wa-screen.wa-lg .wa-camo .camo-date       { font-size: 11px; margin-bottom: 2px; }
+  .wa-screen.wa-lg .wa-camo .camo-year       { font-size: 10px; }
+  .wa-screen.wa-md .wa-camo .camo-time-small { font-size: 7px; top: 8px; right: 9px; }
+  .wa-screen.wa-md .wa-camo .camo-time-big   { font-size: 24px; margin-bottom: 5px; }
+  .wa-screen.wa-md .wa-camo .camo-date       { font-size: 9px; margin-bottom: 2px; }
+  .wa-screen.wa-md .wa-camo .camo-year       { font-size: 8px; }
+  .wa-screen.wa-sm .wa-camo .camo-time-small { font-size: 6px; top: 6px; right: 7px; }
+  .wa-screen.wa-sm .wa-camo .camo-time-big   { font-size: 19px; margin-bottom: 4px; }
+  .wa-screen.wa-sm .wa-camo .camo-date       { font-size: 7px; margin-bottom: 1px; }
+  .wa-screen.wa-sm .wa-camo .camo-year       { font-size: 6px; }
 
   /* ── App Store Button ── */
   .appstore-btn {
@@ -441,8 +461,15 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid rgba(209,123,158,0.3);
+    border: 2px solid rgba(255,255,255,0.5);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .swatch:hover { transform: scale(1.08); }
+  .swatch.selected {
+    border-color: var(--accent, #d17b9e);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.25);
   }
 
   /* ── Coming Soon ── */
@@ -529,7 +556,6 @@
         <div class="iphone-divider">♦</div>
         <div class="mini-watch">
           <img src="oshi_sample.png" alt="推し画像">
-          <div class="mini-watch-dot">♦</div>
         </div>
         <div class="iphone-caption">Apple Watch × 推し活</div>
       </div>
@@ -541,7 +567,6 @@
       <div class="wa-case wa-lg">
         <div class="wa-screen wa-lg">
           <img src="oshi_sample.png" alt="推し画像">
-          <div class="wa-dot wa-lg">♦</div>
         </div>
       </div>
       <div class="wa-band wa-lg bot"></div>
@@ -579,7 +604,6 @@
         <div class="wa-case wa-sm">
           <div class="wa-screen wa-sm">
             <img src="oshi_sample.png" alt="推し文字盤">
-            <div class="wa-dot wa-sm">♦</div>
           </div>
         </div>
         <div class="wa-band wa-sm bot"></div>
@@ -600,11 +624,11 @@
         <div class="wa-case wa-sm">
           <div class="wa-screen wa-sm">
             <div class="wa-camo">
-              <span class="res">Reserved</span>
-              <span class="dt">令和8年</span>
-              <span class="dt">05/30 土</span>
+              <span class="camo-time-small">21:45</span>
+              <span class="camo-time-big">21:45</span>
+              <span class="camo-date">Aug 8 (Sat)</span>
+              <span class="camo-year">R8 ♦ 2026</span>
             </div>
-            <div class="wa-dot wa-sm">♦</div>
           </div>
         </div>
         <div class="wa-band wa-sm bot"></div>
@@ -633,7 +657,6 @@
       <div class="wa-case wa-md">
         <div class="wa-screen wa-md">
           <img src="oshi_sample.png" alt="推し画像">
-          <div class="wa-dot wa-md">♦</div>
         </div>
       </div>
       <div class="wa-band wa-md bot"></div>
@@ -661,11 +684,11 @@
   </h2>
   <p class="feature-desc">iPhoneで選ぶと、Watchにすぐ反映。</p>
 
-  <div class="swatches">
-    <div class="swatch" style="background:#141020;"></div>
-    <div class="swatch" style="background:#1A0F38;"></div>
-    <div class="swatch" style="background:#2E0F1A;"></div>
-    <div class="swatch" style="background:#0A231A;"></div>
+  <div class="swatches" id="camo-swatches">
+    <div class="swatch selected" data-color="#7B3FE4" style="background:#7B3FE4;"></div>
+    <div class="swatch" data-color="#D1477B" style="background:#D1477B;"></div>
+    <div class="swatch" data-color="#2FA36B" style="background:#2FA36B;"></div>
+    <div class="swatch" data-color="#3C6FE0" style="background:#3C6FE0;"></div>
   </div>
 
   <div class="watch-wrap">
@@ -673,17 +696,31 @@
       <div class="wa-band wa-md top"></div>
       <div class="wa-case wa-md">
         <div class="wa-screen wa-md">
-          <div class="wa-camo">
-            <span class="res">Reserved</span>
-            <span class="dt">令和8年</span>
-            <span class="dt">05/30 土</span>
+          <div class="wa-camo" id="camo-preview">
+            <span class="camo-time-small">21:45</span>
+            <span class="camo-time-big">21:45</span>
+            <span class="camo-date">Aug 8 (Sat)</span>
+            <span class="camo-year">R8 ♦ 2026</span>
           </div>
-          <div class="wa-dot wa-md">♦</div>
         </div>
       </div>
       <div class="wa-band wa-md bot"></div>
     </div>
   </div>
+
+  <script>
+    (function () {
+      var swatches = document.querySelectorAll('#camo-swatches .swatch');
+      var preview = document.getElementById('camo-preview');
+      swatches.forEach(function (el) {
+        el.addEventListener('click', function () {
+          swatches.forEach(function (s) { s.classList.remove('selected'); });
+          el.classList.add('selected');
+          if (preview) { preview.style.background = el.dataset.color; }
+        });
+      });
+    })();
+  </script>
 
   <p class="sub" style="margin-top:24px;">推しの世界観に合わせて、とことん自分らしく。</p>
 </section>
